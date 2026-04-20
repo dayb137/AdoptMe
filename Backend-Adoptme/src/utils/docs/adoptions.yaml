@@ -1,0 +1,112 @@
+openapi: 3.0.1
+info:
+  title: API - Adoptions
+  version: 1.0.0
+  description: Documentación de los endpoints de adopciones
+
+paths:
+  /api/adoptions:
+    get:
+      summary: Obtener todas las adopciones
+      tags:
+        - Adoptions
+      responses:
+        "200":
+          description: Lista de adopciones obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Adoption'
+        "500":
+          description: Error interno del servidor
+    post:
+      summary: Crear una nueva adopción
+      tags:
+        - Adoptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createAdoption'
+      responses:
+        "201":
+          description: Adopción creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/Adoption'
+        "400":
+          description: Datos inválidos
+
+  /api/adoptions/{aid}:
+    get:
+      summary: Obtener una adopción por ID
+      tags:
+        - Adoptions
+      parameters:
+        - in: path
+          name: aid
+          required: true
+          schema:
+            type: string
+          description: ID de la adopción
+      responses:
+        "200":
+          description: Adopción obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Adoption'
+        "404":
+          description: Adopción no encontrada
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado por mongo
+        owner:
+          type: string
+          description: ID del usuario que adopta
+        pet:
+          type: string
+          description: ID de la mascota adoptada
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha en que se creó la adopción
+      example:
+        _id: "64f8e7cbd2b123456789abcd"
+        owner: "64f8d2cbd2b123456789abcd"
+        pet: "64f8e8cbd2b987654321abcd"
+        createdAt: "2025-10-17T18:20:00.000Z"
+
+    createAdoption:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: ID del usuario que adopta
+        pet:
+          type: string
+          description: ID de la mascota adoptada
+      required:
+        - owner
+        - pet

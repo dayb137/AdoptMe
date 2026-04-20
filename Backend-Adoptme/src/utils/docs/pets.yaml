@@ -1,0 +1,193 @@
+openapi: 3.0.1
+info:
+  title: API - Pets
+  version: 1.0.0
+  description: Documentación de los endpoints de mascotas
+
+paths:
+  /api/pets:
+    get:
+      summary: Obtiene todas las mascotas
+      tags:
+        - Pets
+      responses:
+        "200":
+          description: Lista de mascotas obtenidas exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Pets"
+        "500":
+          description: Error interno del servidor
+    post:
+      summary: Crear mascota
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createPet"
+      responses:
+        "201":
+          description: Mascota creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Pets"
+        "400":
+          description: Datos inválidos
+
+  /api/pets/withimage:
+    post:
+      summary: Crear mascota con imagen
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Michi"
+                specie:
+                  type: string
+                  example: "Gato"
+                birthDate:
+                  type: string
+                  format: date
+                  example: "2022-01-15"
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Mascota creada con imagen
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Pets"
+
+  /api/pets/{pid}:
+    put:
+      summary: Actualizar mascota por ID
+      tags:
+        - Pets
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la mascota
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createPet"
+      responses:
+        "200":
+          description: Mascota actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pets"
+        "404":
+          description: Mascota no encontrada
+    delete:
+      summary: Eliminar mascota por ID
+      tags:
+        - Pets
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la mascota
+      responses:
+        "200":
+          description: Mascota eliminada exitosamente
+        "404":
+          description: Mascota no encontrada
+
+components:
+  schemas:
+    Pets:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: id autogenerado por mongo
+        name:
+          type: string
+          description: Nombre de la mascota
+        specie:
+          type: string
+          description: Especie de la mascota
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento (YYYY-MM-DD)
+        adopted:
+          type: boolean
+          description: Si está adoptado
+        owner:
+          type: string
+          description: ID del dueño (usuario)
+        image:
+          type: string
+          description: URL de la imagen de la mascota
+      example:
+        _id: "64f8d2cbd2b123456789abcd"
+        name: "Firulais"
+        specie: "Perro"
+        birthDate: "2020-05-15"
+        adopted: true
+        owner: "64f8c5e7d2b987654321abcd"
+        image: "https://miapi.com/images/firulais.jpg"
+    createPet:
+      type: object
+      required:
+        - name
+        - specie
+        - birthDate
+      properties:
+        name:
+          type: string
+          description: Nombre de la mascota
+          example: "Firulais"
+        specie:
+          type: string
+          description: Especie de la mascota
+          example: "Perro"
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento (YYYY-MM-DD)
+          example: "2020-05-15"

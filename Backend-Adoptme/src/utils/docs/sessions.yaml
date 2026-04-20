@@ -1,0 +1,156 @@
+openapi: 3.0.1
+info:
+  title: API - Adoptions
+  version: 1.0.0
+  description: Documentación de los endpoints de adopciones
+
+paths:
+  /api/sessions/register:
+    post:
+      summary: Registrar un nuevo usuario
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - email
+                - password
+              properties:
+                first_name:
+                  type: string
+                  example: "Juan"
+                last_name:
+                  type: string
+                  example: "Pérez"
+                email:
+                  type: string
+                  format: email
+                  example: "juan.perez@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "miContraseñaSegura123"
+      responses:
+        "201":
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Usuario creado correctamente
+        "400":
+          description: Datos inválidos o email ya registrado
+
+  /api/sessions/login:
+    post:
+      summary: Iniciar sesión
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "juan.perez@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "miContraseñaSegura123"
+      responses:
+        "200":
+          description: Sesión iniciada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Login exitoso
+        "401":
+          description: Credenciales incorrectas
+
+  /api/sessions/current:
+    get:
+      summary: Obtener datos del usuario autenticado
+      tags:
+        - Sessions
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Datos del usuario actual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/User"
+        "401":
+          description: No autorizado (sin sesión válida)
+
+  /api/sessions/unprotectedLogin:
+    get:
+      summary: Login sin protección (solo para pruebas)
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: Login simulado exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Login sin autenticación (modo prueba)
+
+  /api/sessions/unprotectedCurrent:
+    get:
+      summary: Datos del usuario sin protección (solo para pruebas)
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: Datos del usuario simulado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/User"
