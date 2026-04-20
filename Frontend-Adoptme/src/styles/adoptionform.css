@@ -1,0 +1,145 @@
+.adoption-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.adoption-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.adoption-modal h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2D2D2D;
+  margin-bottom: 8px;
+}
+
+.adoption-modal p.subtitle {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 28px;
+}
+
+.adoption-question {
+  margin-bottom: 24px;
+}
+
+.adoption-question p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2D2D2D;
+  margin-bottom: 8px;
+}
+
+.adoption-question textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #EEEEEE;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #2D2D2D;
+  background: #FAFAFA;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border 0.2s ease;
+  font-family: inherit;
+}
+
+.adoption-question textarea:focus {
+  border-color: #5A52D5;
+}
+
+.adoption-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.adoption-btn-primary {
+  flex: 1;
+  background: #5A52D5;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.adoption-btn-primary:hover {
+  background: #4840c0;
+}
+
+.adoption-btn-primary:disabled {
+  background: #BBBBBB;
+}
+
+.adoption-btn-secondary {
+  background: transparent;
+  color: #888;
+  border: 1.5px solid #EEEEEE;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.adoption-btn-secondary:hover {
+  border-color: #888;
+}
+
+.adoption-result {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.adoption-result .result-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.adoption-result h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.adoption-result h3.apto {
+  color: #5A52D5;
+}
+
+.adoption-result h3.no-apto {
+  color: #E07A7A;
+}
+
+.adoption-result p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.loading-questions {
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+  font-size: 0.95rem;
+}

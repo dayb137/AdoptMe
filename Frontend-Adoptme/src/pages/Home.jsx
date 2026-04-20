@@ -30,7 +30,7 @@ function Home() {
     <div>
       <header className="home-header">
         <div>
-          <h1>🐾 Adoptme</h1>
+          <h1>🐾 AdoptMe</h1>
           <p>Encontrá tu compañero ideal</p>
         </div>
         <div>

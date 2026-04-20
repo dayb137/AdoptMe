@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import AdoptionForm from '../components/AdoptionForm'
 import '../styles/petdetail.css'
 
 function PetDetail() {
@@ -10,8 +11,7 @@ function PetDetail() {
   const [pet, setPet] = useState(null)
   const [description, setDescription] = useState('')
   const [loadingDesc, setLoadingDesc] = useState(false)
-  const [loadingAdopt, setLoadingAdopt] = useState(false)
-  const [adoptMessage, setAdoptMessage] = useState('')
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     fetch(`/api/pets/${pid}`)
@@ -24,37 +24,21 @@ function PetDetail() {
     const res = await fetch('/api/ai/pet-description', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: pet.name,
-        specie: pet.specie,
-        birthDate: pet.birthDate
-      })
+      body: JSON.stringify({ name: pet.name, specie: pet.specie, birthDate: pet.birthDate })
     })
     const data = await res.json()
     setDescription(data.payload)
     setLoadingDesc(false)
   }
 
-  const handleAdopt = async () => {
+  const handleAdoptClick = () => {
     if (!user) return navigate('/login')
-    setLoadingAdopt(true)
-    setAdoptMessage('')
+    setShowForm(true)
+  }
 
-    const res = await fetch(`/api/adoptions/${user._id}/${pid}`, {
-      method: 'POST',
-      credentials: 'include'
-    })
-
-    const data = await res.json()
-
-    if (data.status === 'success') {
-      setAdoptMessage('¡Adoptaste esta mascota! 🎉')
-      setPet({ ...pet, adopted: true })
-    } else {
-      setAdoptMessage(data.error || 'Error al adoptar')
-    }
-
-    setLoadingAdopt(false)
+  const handleAdopted = () => {
+    setShowForm(false)
+    setPet({ ...pet, adopted: true })
   }
 
   if (!pet) return <p>Cargando...</p>
@@ -81,19 +65,14 @@ function PetDetail() {
           </div>
 
           {!pet.adopted && (
-            <button
-              className="petdetail-btn"
-              onClick={handleAdopt}
-              disabled={loadingAdopt}
-              style={{ marginBottom: '12px' }}
-            >
-              {loadingAdopt ? 'Procesando...' : '❤️ Adoptar'}
+            <button className="petdetail-btn" onClick={handleAdoptClick} style={{ marginBottom: '12px' }}>
+              ❤️ Adoptar
             </button>
           )}
 
-          {adoptMessage && (
-            <p style={{ color: pet.adopted ? '#5A52D5' : '#E07A7A', marginBottom: '12px' }}>
-              {adoptMessage}
+          {pet.adopted && (
+            <p style={{ color: '#5A52D5', fontWeight: '600', marginBottom: '12px' }}>
+              🎉 ¡Esta mascota ya fue adoptada!
             </p>
           )}
 
@@ -103,7 +82,7 @@ function PetDetail() {
             disabled={loadingDesc}
             style={{ background: 'transparent', color: '#5A52D5', border: '1.5px solid #5A52D5' }}
           >
-            {loadingDesc ? 'Generando...' : '✨ Generar descripción con IA'}
+            {loadingDesc ? 'Generando...' : '✨ Conoce mas sobre esta mascota'}
           </button>
 
           {description && (
@@ -114,6 +93,15 @@ function PetDetail() {
           )}
         </div>
       </div>
+
+      {showForm && (
+        <AdoptionForm
+          pet={pet}
+          user={user}
+          onClose={() => setShowForm(false)}
+          onAdopted={handleAdopted}
+        />
+      )}
     </div>
   )
 }

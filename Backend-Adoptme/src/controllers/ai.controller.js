@@ -48,6 +48,67 @@ const chat = async (req, res) => {
     res.send({ status: "success", payload: response });
 }
 
+const generateAdoptionQuestions = async (req, res) => {
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const { name, specie } = req.body;
+    if (!name || !specie) return res.status(400).send({ status: "error", error: "Incomplete values" });
+
+    const completion = await groq.chat.completions.create({
+        messages: [
+            {
+                role: "user",
+                content: `Generá 6 preguntas para evaluar si una persona es apta para adoptar una mascota.
+                La mascota es: ${name}, especie: ${specie}.
+                Las preguntas deben ser sobre: tipo de vivienda, espacios disponibles, redes de contención, compromiso de castración, experiencia previa con mascotas.
+                Adaptá las preguntas según la especie. Si la persona no es apta dicelo
+                Respondé SOLO con un array JSON con este formato, sin texto extra:
+                [
+                  {"id": 1, "pregunta": "..."},
+                  {"id": 2, "pregunta": "..."}
+                ]`
+            }
+        ],
+        model: "llama-3.3-70b-versatile",
+    });
+
+    try {
+        const text = completion.choices[0]?.message?.content || "[]"
+        const questions = JSON.parse(text)
+        res.send({ status: "success", payload: questions })
+    } catch (e) {
+        res.status(500).send({ status: "error", error: "Error al generar preguntas" })
+    }
+}
+
+const evaluateAdoption = async (req, res) => {
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const { name, specie, answers } = req.body;
+    if (!name || !specie || !answers) return res.status(400).send({ status: "error", error: "Incomplete values" });
+
+    const completion = await groq.chat.completions.create({
+        messages: [
+            {
+                role: "user",
+                content: `Evaluá si esta persona es apta para adoptar a ${name} (${specie}).
+                Sus respuestas fueron: ${JSON.stringify(answers)}
+                Respondé SOLO con un objeto JSON con este formato, sin texto extra:
+                {
+                  "apto": true o false,
+                  "mensaje": "explicación breve y empática de máximo 3 oraciones"
+                }`
+            }
+        ],
+        model: "llama-3.3-70b-versatile",
+    });
+
+    try {
+        const text = completion.choices[0]?.message?.content || "{}"
+        const result = JSON.parse(text)
+        res.send({ status: "success", payload: result })
+    } catch (e) {
+        res.status(500).send({ status: "error", error: "Error al evaluar" })
+    }
+}
 
 
-export default { generatePetDescription, chat}
+export default { generatePetDescription, chat, generateAdoptionQuestions, evaluateAdoption}
