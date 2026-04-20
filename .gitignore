@@ -1,12 +1,12 @@
 # Backend
-backend/node_modules/
-backend/.env
+Backend-Adoptme/node_modules/
+Backend-Adoptme/.env
 
 # Frontend
-frontend/node_modules/
-frontend/dist/
-frontend/dist-ssr/
-frontend/*.local
+Frontend-Adoptme/node_modules/
+Frontend-Adoptme/dist/
+Frontend-Adoptme/dist-ssr/
+Frontend-Adoptme/*.local
 
 # Logs
 logs/
